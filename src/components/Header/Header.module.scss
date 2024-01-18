@@ -1,0 +1,16 @@
+.Header {
+  display: flex;
+  background-color: white;
+  padding: 0.2rem 0.8rem;
+  align-items: center;
+  column-gap: 0.4rem;
+
+  img {
+    width: 1.6rem;
+  }
+}
+
+.CoreNotes {
+  font-size: 0.75rem;
+  color: #455a64;
+}
