@@ -1,18 +1,18 @@
 import { SearchIcon } from '../Icons';
 import styles from './Search.module.scss';
 
-type SearchTypes = {
-  placeholder: string;
+interface ISearch {
   value?: string;
-  onChange: () => void;
-};
+}
 
-const Search = ({ placeholder, value }: SearchTypes) => {
+const Search = ({ value }: ISearch) => {
+  const handleSubmit = () => {};
+
   return (
-    <div className={styles.search}>
-      <input type="text" placeholder={placeholder} value={value || ''} />
+    <form className={styles.search}>
+      <input type="text" placeholder="Pesquisar notas" value={value || ''} />
       <SearchIcon />
-    </div>
+    </form>
   );
 };
 

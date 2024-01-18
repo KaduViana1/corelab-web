@@ -1,16 +1,26 @@
+@import '../../styles/break-points.scss';
+
 .Header {
   display: flex;
   background-color: white;
-  padding: 0.2rem 0.8rem;
+  padding: 0.8rem;
   align-items: center;
   column-gap: 0.4rem;
+  box-shadow: #959595 1px 0px 7px;
 
   img {
-    width: 1.6rem;
+    width: 2rem;
   }
 }
 
 .CoreNotes {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #455a64;
+}
+
+@include laptop {
+  .Header {
+    padding: 1rem 4rem;
+    column-gap: 1.5rem;
+  }
 }
