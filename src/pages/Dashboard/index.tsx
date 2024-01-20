@@ -1,26 +1,59 @@
 import styles from './Dashboard.module.scss';
-import { Card, Header } from '../../components';
+import { Header } from '../../components';
 import Note from '../../components/Note';
+import NoteCreationForm from '../../components/NoteCreationForm';
+import { useEffect } from 'react';
+import { useTodoStore } from '../../store';
 
 const Dashboard = () => {
+  const todos = useTodoStore(state => state.todos);
+  const fetchTodos = useTodoStore(state => state.getTodos);
+
+  useEffect(() => {
+    fetchTodos();
+  }, [fetchTodos]);
+
   return (
     <>
       <Header />
       <main className={styles.Main}>
-        <Card></Card>
         <section className={styles.sections}>
+          <NoteCreationForm />
           <span>Favoritas</span>
           <div className={styles.gridContainer}>
-            <Note title="Titulo"></Note>
-            <Note title="Título" isFavorite backgroundColor="#9DD6FF"></Note>
+            {todos &&
+              todos.map(
+                todo =>
+                  todo.is_favorite && (
+                    <Note
+                      title={todo.title}
+                      content={todo.content}
+                      color={todo.color}
+                      id={todo.id}
+                      key={todo.id}
+                      is_favorite={todo.is_favorite}
+                    />
+                  )
+              )}
           </div>
         </section>
         <section className={styles.sections}>
           <span>Outras</span>
           <div className={styles.gridContainer}>
-            <Note title="Titulo"></Note>
-            <Note title="Titulo" backgroundColor="#DAFF8B"></Note>
-            <Note title="Titulo"></Note>
+            {todos &&
+              todos.map(
+                todo =>
+                  !todo.is_favorite && (
+                    <Note
+                      title={todo.title}
+                      content={todo.content}
+                      color={todo.color}
+                      id={todo.id}
+                      key={todo.id}
+                      is_favorite={todo.is_favorite}
+                    />
+                  )
+              )}
           </div>
         </section>
       </main>

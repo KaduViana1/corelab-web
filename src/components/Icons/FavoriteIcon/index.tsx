@@ -1,9 +1,9 @@
 interface IFavoriteIcon {
-  isFavoite?: boolean;
+  isFavorite?: boolean;
 }
 
-const FavoriteIcon = ({ isFavoite }: IFavoriteIcon) => {
-  return isFavoite ? (
+const FavoriteIcon = ({ isFavorite }: IFavoriteIcon) => {
+  return isFavorite ? (
     <svg
       width="21"
       height="20"
@@ -22,8 +22,8 @@ const FavoriteIcon = ({ isFavoite }: IFavoriteIcon) => {
     </svg>
   ) : (
     <svg
-      width="20"
-      height="19"
+      width="21"
+      height="20"
       viewBox="0 0 20 19"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

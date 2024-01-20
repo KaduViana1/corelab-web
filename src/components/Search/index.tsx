@@ -9,8 +9,8 @@ const Search = ({ value }: ISearch) => {
   const handleSubmit = () => {};
 
   return (
-    <form className={styles.search}>
-      <input type="text" placeholder="Pesquisar notas" value={value || ''} />
+    <form className={styles.search} onSubmit={handleSubmit}>
+      <input type="text" placeholder="Pesquisar notas" />
       <SearchIcon />
     </form>
   );

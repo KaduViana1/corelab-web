@@ -4,12 +4,17 @@ import styles from './Button.module.scss';
 interface IButton {
   onClick: (e: any) => void;
   children: ReactNode;
-  ref?: MutableRefObject<null>;
+  title: string;
 }
 
-const Button = ({ onClick, children, ref }: IButton) => {
+const Button = ({ onClick, children, title }: IButton) => {
   return (
-    <button ref={ref} className={styles.Button} onClick={onClick}>
+    <button
+      type="button"
+      title={title}
+      className={styles.Button}
+      onClick={onClick}
+    >
       {children}
     </button>
   );

@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
 import { getVehicles } from '../../lib/api';
-import { Button, Card, Search } from '../../components';
 import styles from './Vehicles.module.scss';
-import { IVehicle } from '../../types/Vehicle';
 
 const VehiclesPage = () => {
-  const [vehicles, setVehicles] = useState<IVehicle[]>([]);
-  const [search, setSearch] = useState<string>('');
+  const [vehicles, setVehicles] = useState(null);
 
   useEffect(() => {
     const fetchVehicles = async () => {
       const payload = await getVehicles();
-      setVehicles(payload);
+      console.log(payload);
+      setVehicles(null);
     };
 
     fetchVehicles();
@@ -21,13 +19,7 @@ const VehiclesPage = () => {
 
   return (
     <div className={styles.Vehicles}>
-      <main className={styles.main}>
-        <Card title="Sandero Stepway">
-          <p>Price: 22000</p>
-          <p>Description: Carro usado por 2 anos...</p>
-          <p>Year: 2018</p>
-        </Card>
-      </main>
+      <main className={styles.main}></main>
     </div>
   );
 };
