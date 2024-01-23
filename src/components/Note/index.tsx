@@ -1,17 +1,11 @@
 import styles from './Note.module.scss';
 import Button from '../Button';
-import {
-  ChooseColorIcon,
-  EditIcon,
-  FavoriteIcon,
-  SaveIcon,
-  XIcon,
-} from '../Icons';
+import { ChooseColorIcon, EditIcon, FavoriteIcon, SaveIcon, XIcon } from '../Icons';
 import ColorPallete from '../ColorPallete';
 import { useEffect, useState } from 'react';
-import type { ITodo } from '../../types/Todo';
-import { updateTodos } from '../../lib/api';
 import { useTodoStore } from '../../store';
+import { createPortal } from 'react-dom';
+import ConfirmDeleteModal from '../ConfirmDeleteModal';
 
 interface INote {
   title: string;
@@ -24,39 +18,51 @@ interface INote {
 const Note = ({ color, title, is_favorite, content, id }: INote) => {
   const [titleInput, setTitleInput] = useState(title);
   const [contentInput, setContentInput] = useState(content);
+  const [error, setError] = useState('');
   const [showPallete, setShowPallete] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const deleteTodo = useTodoStore(state => state.deleteTodo);
-  const favoriteTodo = useTodoStore(state => state.favoriteTodo);
+  const [showModal, setShowModal] = useState(false);
+  const favoriteTodo = useTodoStore((state) => state.favoriteTodo);
+  const updateTodo = useTodoStore((state) => state.updateTodo);
 
   const toggleColorPallete = (e: MouseEvent) => {
     e.stopPropagation();
     setEditMode(true);
-    setShowPallete(prev => !prev);
+    setShowPallete((prev) => !prev);
   };
 
   const toggleEditMode = () => {
-    setEditMode(prev => !prev);
+    setEditMode((prev) => !prev);
   };
 
-  const favoriteToggle = async () => {
+  const toggleFavorite = async () => {
     favoriteTodo(id, { is_favorite: !is_favorite });
   };
 
   const saveChanges = async () => {
+    if (titleInput === '' || contentInput === '') {
+      setError('Titulo e conteúdo são obrigatórios!');
+      return;
+    }
+
     const todo = {
       title: titleInput,
       content: contentInput,
       color,
       is_favorite,
+      id,
     };
 
-    try {
-      await updateTodos(todo, id);
-      setEditMode(false);
-    } catch (error) {
-      console.log(error);
-    }
+    updateTodo(todo);
+    setEditMode(false);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    stateToChange: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    setError('');
+    stateToChange(e.target.value);
   };
 
   useEffect(() => {
@@ -71,28 +77,31 @@ const Note = ({ color, title, is_favorite, content, id }: INote) => {
 
   return (
     <>
+      {showModal &&
+        createPortal(
+          <ConfirmDeleteModal closeModal={() => setShowModal(false)} id={id} />,
+          document.body
+        )}
+
       <div className={styles.container}>
+        {error && <p className={styles.errorMessage}>{error}</p>}
         <div
           style={{
             backgroundColor: color ?? 'white',
-            boxShadow: is_favorite
-              ? '02px 2px 3px rgba(0, 0, 0, 0.25)'
-              : 'none',
+            boxShadow: is_favorite ? '02px 2px 3px rgba(0, 0, 0, 0.25)' : 'none',
           }}
-          className={styles.Card}
-        >
+          className={styles.Card}>
           <div
             style={{
               borderBottom: color ? '1px solid #FFFFFF' : '1px solid #D9D9D9',
             }}
             className={styles.heading}
-            title={titleInput}
-          >
+            title={titleInput}>
             <input
               title={title}
               readOnly={!editMode}
               value={titleInput}
-              onChange={e => setTitleInput(e.target.value)}
+              onChange={(e) => handleChange(e, setTitleInput)}
               type="text"
             />
 
@@ -103,7 +112,7 @@ const Note = ({ color, title, is_favorite, content, id }: INote) => {
                 </Button>
               )}
 
-              <Button title="Favoritar" onClick={favoriteToggle}>
+              <Button title="Favoritar" onClick={toggleFavorite}>
                 <FavoriteIcon isFavorite={is_favorite} />
               </Button>
             </div>
@@ -113,8 +122,12 @@ const Note = ({ color, title, is_favorite, content, id }: INote) => {
             <textarea
               readOnly={!editMode}
               value={contentInput}
-              onChange={e => setContentInput(e.target.value)}
-            ></textarea>
+              onChange={(e) => handleChange(e, setContentInput)}
+              style={{
+                scrollbarColor: color
+                  ? 'white rgba(0, 0, 0, 0.15)'
+                  : 'rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.15)',
+              }}></textarea>
             <footer className={styles.Footer}>
               <Button title="Editar" onClick={toggleEditMode}>
                 <EditIcon />
@@ -125,7 +138,7 @@ const Note = ({ color, title, is_favorite, content, id }: INote) => {
               </Button>
               {showPallete && <ColorPallete id={id} />}
               <div className={styles.delete}>
-                <Button title="Excluir" onClick={() => deleteTodo(id)}>
+                <Button title="Excluir" onClick={() => setShowModal(true)}>
                   <XIcon />
                 </Button>
               </div>

@@ -1,6 +1,6 @@
 @import '../../styles/break-points.scss';
 
-.Card {
+.formContainer {
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -44,8 +44,16 @@
   display: flex;
 }
 
+.errorMessage {
+  color: red;
+  font-size: 0.8rem;
+  font-weight: 800;
+  margin-bottom: -1rem;
+}
+
 @include laptop {
-  .Card {
+  .formContainer {
     border-radius: 0;
+    min-width: 35rem;
   }
 }

@@ -4,13 +4,7 @@ interface IFavoriteIcon {
 
 const FavoriteIcon = ({ isFavorite }: IFavoriteIcon) => {
   return isFavorite ? (
-    <svg
-      width="21"
-      height="20"
-      viewBox="0 0 21 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M7.90088 7.68127L2.74707 8.47418L7.30619 12.1413L6.11685 17.6916L10.2795 14.52L15.4334 17.6916L14.0458 12.1413L17.9112 8.47418L12.6582 7.68127L10.2795 2.52747L7.90088 7.68127Z"
         fill="#FFA000"
@@ -21,13 +15,7 @@ const FavoriteIcon = ({ isFavorite }: IFavoriteIcon) => {
       />
     </svg>
   ) : (
-    <svg
-      width="21"
-      height="20"
-      viewBox="0 0 20 19"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="21" height="20" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M10.3286 13.5094L6.69034 15.7059L7.64829 11.5645L4.43576 8.77769L8.67397 8.41966L10.3286 4.51045L11.9833 8.41966L16.2215 8.77769L13.0089 11.5645L13.9669 15.7059M20.0049 7.55848L13.0476 6.96822L10.3286 0.552856L7.60958 6.96822L0.652344 7.55848L5.92591 12.1354L4.34868 18.9378L10.3286 15.3285L16.3085 18.9378L14.7216 12.1354L20.0049 7.55848Z"
         fill="#455A64"

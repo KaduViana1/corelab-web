@@ -12,6 +12,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  row-gap: 1rem;
 
   span {
     align-self: flex-start;
@@ -24,9 +25,14 @@
 .gridContainer {
   display: grid;
   justify-items: center;
-  width: 100%;
   grid-template-columns: 1fr;
   gap: 2rem 1rem;
+}
+
+.noNotesMessage {
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
 }
 
 @include laptop {
@@ -40,10 +46,6 @@
   .gridContainer {
     grid-template-columns: repeat(3, 1fr);
     column-gap: 1rem;
-  }
-
-  .sections {
-    padding-inline: 0.5rem;
   }
 }
 

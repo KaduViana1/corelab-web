@@ -1,49 +1,125 @@
 import { create } from 'zustand';
 import { ITodo } from './types/Todo';
-import {
-  createTodo,
-  deleteTodo,
-  favoriteUnfavoriteTodo,
-  getTodos,
-} from './lib/api';
+import { createTodos, deleteTodo, favoriteUnfavoriteTodo, getTodos, updateTodos } from './lib/api';
+import { toast } from 'react-toastify';
 
-type TodoStore = {
+interface ITodoStore {
   todos: ITodo[];
+  displayedTodos: ITodo[];
   getTodos: () => Promise<void>;
   addTodo: (todo: ITodo) => Promise<void>;
   changeColor: (id: number, newColor: string) => void;
+  updateTodo: (todo: ITodo) => Promise<void>;
   deleteTodo: (id: number) => Promise<void>;
   favoriteTodo: (id: number, is_favorite: { is_favorite: boolean }) => void;
-};
+  filterBySearch: (search: string) => void;
+  filterByFavorite: (favorite: boolean) => void;
+  filterByColor: (color: string) => void;
+  resetFilters: () => void;
+}
 
-export const useTodoStore = create<TodoStore>(set => ({
+//Fetch todos and create a copy of the todos to be displayed, updating only the displayed todos and minimizing APi calls
+
+export const useTodoStore = create<ITodoStore>((set) => ({
   todos: [],
+  displayedTodos: [],
+
   getTodos: async () => {
     const fetchedTodos = await getTodos();
-    set({ todos: fetchedTodos });
+    set({ todos: fetchedTodos, displayedTodos: fetchedTodos });
   },
-  addTodo: async todo => {
-    const newTodo = await createTodo(todo);
-    set(state => ({ todos: [newTodo, ...state.todos] }));
+
+  addTodo: async (todo) => {
+    try {
+      const newTodo = await createTodos(todo);
+      set((state) => ({
+        todos: [newTodo, ...state.todos],
+        displayedTodos: [newTodo, ...state.todos],
+      }));
+      toast.success('Nota criada com sucesso!');
+    } catch (error) {
+      toast.error('Erro! A nota não pôde ser criada');
+    }
   },
+
+  updateTodo: async (todo) => {
+    try {
+      const updatedTodo = await updateTodos(todo);
+      set((state) => {
+        const updatedTodos = state.todos.map((t) => (todo.id === t.id ? updatedTodo : t));
+        return { todos: updatedTodos, displayedTodos: updatedTodos };
+      });
+      toast.success('Nota atualizada com sucesso!');
+    } catch (error) {
+      toast.error('Erro! A nota não pôde ser criada');
+    }
+  },
+
   changeColor: (id, newColor) => {
-    set(state => {
+    set((state) => {
+      const updatedTodos = state.todos.map((todo) =>
+        todo.id === id ? { ...todo, color: newColor } : todo
+      );
       return {
-        todos: state.todos.map(todo =>
-          todo.id === id ? { ...todo, color: newColor } : todo
-        ),
+        todos: updatedTodos,
+        displayedTodos: updatedTodos,
       };
     });
   },
+
   deleteTodo: async (id: number) => {
-    await deleteTodo(id);
-    set(state => ({ todos: state.todos.filter(todo => todo.id !== id) }));
+    try {
+      await deleteTodo(id);
+      set((state) => {
+        const updatedTodos = state.todos.filter((todo) => todo.id !== id);
+        return { todos: updatedTodos, displayedTodos: updatedTodos };
+      });
+      toast.success('Nota excluída com sucesso');
+    } catch (error) {
+      toast.error('Erro! A Nota não pôde ser excluída');
+    }
   },
+
   favoriteTodo: async (id: number, is_favorite) => {
     const updatedTodo = await favoriteUnfavoriteTodo(id, is_favorite);
 
-    set(state => ({
-      todos: state.todos.map(todo => (todo.id === id ? updatedTodo : todo)),
+    set((state) => {
+      const updatedTodos = state.todos.map((todo) => (todo.id === id ? updatedTodo : todo));
+      return { todos: updatedTodos, displayedTodos: updatedTodos };
+    });
+  },
+
+  filterBySearch: (search: string) => {
+    set((state) => {
+      const filteredTodos = state.todos.filter((todo) => {
+        if (
+          todo.title.toLowerCase().includes(search.toLowerCase()) ||
+          todo.content.toLowerCase().includes(search.toLowerCase())
+        )
+          return true;
+
+        return false;
+      });
+
+      return {
+        displayedTodos: filteredTodos,
+      };
+    });
+  },
+
+  filterByFavorite: (favorite: boolean) => {
+    set((state) => ({
+      displayedTodos: state.todos.filter((todo) => todo.is_favorite === favorite),
     }));
+  },
+
+  filterByColor: (color: string) => {
+    set((state) => ({
+      displayedTodos: state.todos.filter((todo) => todo.color === color),
+    }));
+  },
+
+  resetFilters: () => {
+    set((state) => ({ displayedTodos: state.todos }));
   },
 }));

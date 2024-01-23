@@ -3,13 +3,26 @@ import ReactDOM from 'react-dom/client';
 import './index.module.scss';
 import reportWebVitals from './reportWebVitals';
 import Dashboard from './pages/Dashboard';
+import { Bounce, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
     <Dashboard />
+    <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      transition={Bounce}
+      theme="colored"
+    />
   </React.StrictMode>
 );
 
