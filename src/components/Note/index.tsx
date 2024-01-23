@@ -22,6 +22,7 @@ const Note = ({ color, title, is_favorite, content, id }: INote) => {
   const [showPallete, setShowPallete] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [requestInProgress, setRequestInProgress] = useState(false);
   const favoriteTodo = useTodoStore((state) => state.favoriteTodo);
   const updateTodo = useTodoStore((state) => state.updateTodo);
 
@@ -44,7 +45,6 @@ const Note = ({ color, title, is_favorite, content, id }: INote) => {
       setError('Titulo e conteúdo são obrigatórios!');
       return;
     }
-
     const todo = {
       title: titleInput,
       content: contentInput,
@@ -53,8 +53,16 @@ const Note = ({ color, title, is_favorite, content, id }: INote) => {
       id,
     };
 
-    updateTodo(todo);
-    setEditMode(false);
+    if (!requestInProgress) {
+      setRequestInProgress(true);
+      try {
+        updateTodo(todo);
+        setEditMode(false);
+      } catch (error) {
+      } finally {
+        setRequestInProgress(false);
+      }
+    }
   };
 
   const handleChange = (

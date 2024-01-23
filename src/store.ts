@@ -7,9 +7,9 @@ interface ITodoStore {
   todos: ITodo[];
   displayedTodos: ITodo[];
   getTodos: () => Promise<void>;
-  addTodo: (todo: ITodo) => Promise<void>;
+  addTodo: (todo: ITodo) => Promise<boolean>;
   changeColor: (id: number, newColor: string) => void;
-  updateTodo: (todo: ITodo) => Promise<void>;
+  updateTodo: (todo: ITodo) => Promise<boolean>;
   deleteTodo: (id: number) => Promise<void>;
   favoriteTodo: (id: number, is_favorite: { is_favorite: boolean }) => void;
   filterBySearch: (search: string) => void;
@@ -37,8 +37,10 @@ export const useTodoStore = create<ITodoStore>((set) => ({
         displayedTodos: [newTodo, ...state.todos],
       }));
       toast.success('Nota criada com sucesso!');
+      return true;
     } catch (error) {
       toast.error('Erro! A nota não pôde ser criada');
+      return false;
     }
   },
 
@@ -50,8 +52,10 @@ export const useTodoStore = create<ITodoStore>((set) => ({
         return { todos: updatedTodos, displayedTodos: updatedTodos };
       });
       toast.success('Nota atualizada com sucesso!');
+      return true;
     } catch (error) {
       toast.error('Erro! A nota não pôde ser criada');
+      return false;
     }
   },
 

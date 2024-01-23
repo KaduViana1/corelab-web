@@ -10,6 +10,7 @@ const NoteCreationForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('Criar nota...');
   const [error, setError] = useState('');
+  const [requestInProgress, setRequestInProgress] = useState(false);
   const addTodo = useTodoStore((state) => state.addTodo);
 
   const toggleFavorite = () => {
@@ -24,11 +25,21 @@ const NoteCreationForm = () => {
     }
 
     const formValues = { title, content, is_favorite: isFavorite };
-    await addTodo(formValues as ITodo);
 
-    setTitle('');
-    setContent('Criar nota...');
-    setIsFavorite(false);
+    if (!requestInProgress) {
+      setRequestInProgress(true);
+      try {
+        const reset = await addTodo(formValues as ITodo);
+        if (reset) {
+          setTitle('');
+          setContent('Criar nota...');
+          setIsFavorite(false);
+        }
+      } catch (error) {
+      } finally {
+        setRequestInProgress(false);
+      }
+    }
   };
 
   const handleChange = (
