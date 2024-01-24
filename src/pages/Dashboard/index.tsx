@@ -8,7 +8,7 @@ import { shallow } from 'zustand/shallow';
 
 const Dashboard = () => {
   const fetchTodos = useTodoStore((state) => state.getTodos);
-  const [emptyTodosMessage, setEmptyTodosMessage] = useState('');
+  const [emptyTodosMessage, setEmptyTodosMessage] = useState('Carregando notas...');
   const favoritedTodos = useTodoStore(
     (state) => state.displayedTodos.filter((todo) => todo.is_favorite),
     shallow
@@ -21,8 +21,11 @@ const Dashboard = () => {
   useEffect(() => {
     const fn = async () => {
       await fetchTodos();
-      if (favoritedTodos.length === 0 && otherTodos.length === 0)
+      if (favoritedTodos.length === 0 && otherTodos.length === 0) {
         setEmptyTodosMessage('Você ainda não possui nenhuma nota');
+      } else {
+        setEmptyTodosMessage('');
+      }
     };
 
     fn();

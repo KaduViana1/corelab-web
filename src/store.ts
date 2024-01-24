@@ -25,8 +25,12 @@ export const useTodoStore = create<ITodoStore>((set) => ({
   displayedTodos: [],
 
   getTodos: async () => {
-    const fetchedTodos = await getTodos();
-    set({ todos: fetchedTodos, displayedTodos: fetchedTodos });
+    try {
+      const fetchedTodos = await getTodos();
+      set({ todos: fetchedTodos, displayedTodos: fetchedTodos });
+    } catch (error) {
+      toast.error('Erro! Não foi possível conectar com o servidor');
+    }
   },
 
   addTodo: async (todo) => {
