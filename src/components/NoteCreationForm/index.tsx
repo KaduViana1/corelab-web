@@ -44,17 +44,17 @@ const NoteCreationForm = () => {
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    stateToChange: React.Dispatch<React.SetStateAction<string>>
+    setStateFn: React.Dispatch<React.SetStateAction<string>>
   ) => {
     setError('');
-    stateToChange(event.target.value);
+    setStateFn(event.target.value);
   };
 
   return (
     <>
       {error && <p className={styles.errorMessage}>{error}</p>}
       <div className={styles.formContainer}>
-        <form onSubmit={(e) => handleSubmit(e)}>
+        <form id="form" onSubmit={(e) => handleSubmit(e)}>
           <div className={styles.heading}>
             <input
               value={title}
